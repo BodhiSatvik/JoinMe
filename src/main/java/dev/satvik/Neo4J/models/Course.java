@@ -34,12 +34,12 @@ public class Course {
 		this.title = title;
 	}
 
-	public String getInstructor() {
+	public String getTeacher() {
 		return teacher;
 	}
 
-	public void setInstructor(String instructor) {
-		this.teacher = instructor;
+	public void setTeacher(String teacher) {
+		this.teacher = teacher;
 	}
 
 

@@ -8,6 +8,8 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
+// Business logic, intermediary between controller and repository
+
 @Service
 public class CourseService {
 	private final CourseRepo courseRepo;
