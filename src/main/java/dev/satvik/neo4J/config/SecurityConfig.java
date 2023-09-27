@@ -1,7 +1,7 @@
-package dev.satvik.Neo4J.config;
+package dev.satvik.neo4J.config;
 
-import dev.satvik.Neo4J.services.UserDetailsService;
-import org.springframework.beans.factory.annotation.Value;
+import java.util.Arrays;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -16,17 +16,18 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import java.util.Arrays;
+import dev.satvik.neo4J.services.NeoUserDetailsService;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-	private final UserDetailsService userDetailsService;
+	private final NeoUserDetailsService neoUserDetailsService;
 
-	public SecurityConfig(UserDetailsService userDetailsService) {
-		this.userDetailsService = userDetailsService;
+	public SecurityConfig(NeoUserDetailsService neoUserDetailsService) {
+		this.neoUserDetailsService = neoUserDetailsService;
 	}
 
+	@Bean
 	SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
 		return httpSecurity
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -34,11 +35,12 @@ public class SecurityConfig {
 				.cors(Customizer.withDefaults())
 				.authorizeHttpRequests(auth -> auth
 						.requestMatchers(
-						"api/v1/auth/me"
+								"/api/v1/auth/me",
+								"/api/v1/enrollments/**"
 						).authenticated()
 						.anyRequest().permitAll()
 				)
-				.userDetailsService(userDetailsService)
+				.userDetailsService(neoUserDetailsService)
 				.httpBasic(Customizer.withDefaults())
 				.build();
 	}
@@ -50,20 +52,20 @@ public class SecurityConfig {
 
 	@Bean
 	CorsConfigurationSource corsConfigurationSource() {
-		CorsConfiguration corsConfiguration = new CorsConfiguration();
-		String allowedOrigins = System.getenv("ALLOWED_ORIGINS");
+		CorsConfiguration configuration = new CorsConfiguration();
 
-	// TODO: Make this list come from an env file
-		corsConfiguration.setAllowedOrigins(Arrays.asList("http://localhost:3000","http://127.0.0.1:3000")); // Change to where your fe is
-		corsConfiguration.setAllowedMethods(Arrays.asList("GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS", "HEAD"));
-		corsConfiguration.setAllowCredentials(true);
-		corsConfiguration.setAllowedHeaders(Arrays.asList("Authorization", "Requester-Type", "Content-Type"));
-		corsConfiguration.setExposedHeaders(Arrays.asList("X-Get-Header"));
-		corsConfiguration.setMaxAge(3600L);
+		// TODO: make sure that the origin list comes from an environment file.
+		configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000", "http://127.0.0.1:3000"));
+		configuration.setAllowedMethods(Arrays.asList("GET","POST","PATCH", "PUT", "DELETE", "OPTIONS", "HEAD"));
+		configuration.setAllowCredentials(true);
+		configuration.setAllowedHeaders(Arrays.asList("Authorization", "Requestor-Type", "Content-Type"));
+		configuration.setExposedHeaders(Arrays.asList("X-Get-Header"));
+		configuration.setMaxAge(3600L);
 
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-		source.registerCorsConfiguration("/**", corsConfiguration);
+		source.registerCorsConfiguration("/**", configuration);
 
 		return source;
 	}
+
 }

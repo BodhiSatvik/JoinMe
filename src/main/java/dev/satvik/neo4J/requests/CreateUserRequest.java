@@ -1,13 +1,15 @@
-package dev.satvik.Neo4J.objects;
+package dev.satvik.neo4J.requests;
 
-public class UserDTO {
+public class CreateUserRequest {
 	private String name;
 	private String username;
+	private String password;
 	private String roles;
 
-	public UserDTO(String name, String username, String roles) {
+	public CreateUserRequest(String name, String username, String password, String roles) {
 		this.name = name;
 		this.username = username;
+		this.password = password;
 		this.roles = roles;
 	}
 
@@ -25,6 +27,14 @@ public class UserDTO {
 
 	public void setUsername(String username) {
 		this.username = username;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
 	}
 
 	public String getRoles() {

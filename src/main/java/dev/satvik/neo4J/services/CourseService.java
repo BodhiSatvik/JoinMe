@@ -1,7 +1,7 @@
-package dev.satvik.Neo4J.services;
+package dev.satvik.neo4J.services;
 
-import dev.satvik.Neo4J.models.Course;
-import dev.satvik.Neo4J.repositories.CourseRepo;
+import dev.satvik.neo4J.models.Course;
+import dev.satvik.neo4J.repositories.CourseRepository;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -12,18 +12,18 @@ import java.util.List;
 
 @Service
 public class CourseService {
-	private final CourseRepo courseRepo;
+	private final CourseRepository courseRepository;
 
-	public CourseService(CourseRepo courseRepo) {
-		this.courseRepo = courseRepo;
+	public CourseService(CourseRepository courseRepository) {
+		this.courseRepository = courseRepository;
 	}
 
 	public List<Course> getAllCourses() {
-		return courseRepo.findAll();
+		return courseRepository.findAll();
 	}
 
 	public Course getCourseByIdentifier(String identifier) {
-		return courseRepo.findCourseByIdentifier(identifier)
+		return courseRepository.findCourseByIdentifier(identifier)
 				.orElseThrow(() -> new ResponseStatusException(HttpStatusCode.valueOf(404)));
 	}
 }

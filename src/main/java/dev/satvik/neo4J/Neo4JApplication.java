@@ -1,4 +1,4 @@
-package dev.satvik.Neo4J;
+package dev.satvik.neo4J;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
